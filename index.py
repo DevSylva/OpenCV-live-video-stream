@@ -6,7 +6,7 @@ videofeed = cv2.VideoCapture('rtsp://192.168.43.1:1935/')
 while True:
 
     # print('About to start the Read command')
-    _, frame = videofeed.read()
+    _ , frame = videofeed.read()
     # print('About to show frame of Video.')
     cv2.imshow("Capturing", frame)
     print('Running..')
