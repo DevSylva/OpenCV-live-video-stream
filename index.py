@@ -3,6 +3,7 @@ import os
 import time
 
 RTSP_URL = 'rtsp://192.168.43.1:1935/'
+# RTSP_URL = "rtsp://10.85.217.28:8080/h264_pcm.sdp"
 
 os.environ['OPENCV_FFMPEG_CAPTURE_OPTIONS'] = 'rtsp_transport;udp' # Use tcp instead of udp if stream is unstable
 
@@ -17,7 +18,7 @@ frame_height = int(cap.get(4))
 fps = 15
 
 video_codec = cv2.VideoWriter_fourcc(*'MJPG')
-video_output = cv2.VideoWriter('filename.avi', video_codec, fps, (frame_width, frame_height))
+video_output = cv2.VideoWriter('recording.avi', video_codec, fps, (frame_width, frame_height))
 
 while True:
     ret, frame = cap.read()
@@ -25,6 +26,7 @@ while True:
     if ret == True:
         video_output.write(frame)
         cv2.imshow("Video Recording", frame)
+        print("Camera is live")
 
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break
