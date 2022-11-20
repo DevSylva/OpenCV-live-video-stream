@@ -1,18 +1,37 @@
 import cv2
+import os
+import time
 
-videofeed = cv2.VideoCapture('rtsp://192.168.43.1:1935/')
+RTSP_URL = 'rtsp://192.168.43.1:1935/'
 
-# my phone IP address rtsp://10.85.217.28:8080/h264_ulaw.sdp
+os.environ['OPENCV_FFMPEG_CAPTURE_OPTIONS'] = 'rtsp_transport;udp' # Use tcp instead of udp if stream is unstable
+
+cap = cv2.VideoCapture(RTSP_URL, cv2.CAP_FFMPEG)
+
+if not cap.isOpened():
+    print('Cannot open RTSP stream')
+    exit(-1)
+
+frame_width = int(cap.get(3))
+frame_height = int(cap.get(4))
+fps = 15
+
+video_codec = cv2.VideoWriter_fourcc(*'MJPG')
+video_output = cv2.VideoWriter('filename.avi', video_codec, fps, (frame_width, frame_height))
+
 while True:
+    ret, frame = cap.read()
 
-    # print('About to start the Read command')
-    _ , frame = videofeed.read()
-    # print('About to show frame of Video.')
-    cv2.imshow("Capturing", frame)
-    print('Running..')
+    if ret == True:
+        video_output.write(frame)
+        cv2.imshow("Video Recording", frame)
 
-    if cv2.waitKey(1) & 0xFF == ord('q'):
+        if cv2.waitKey(1) & 0xFF == ord('q'):
+            break
+
+    else:
         break
 
-videofeed.release()
+cap.release()
+video_output.release()
 cv2.destroyAllWindows()
